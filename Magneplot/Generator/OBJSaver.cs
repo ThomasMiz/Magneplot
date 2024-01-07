@@ -41,7 +41,7 @@ namespace Magneplot.Generator
                 uint vertex2Id = getValueOrInsertAsCount(vertexIds, vertex, face.Vertex2);
                 uint vertex3Id = getValueOrInsertAsCount(vertexIds, vertex, face.Vertex3);
                 uint normalId = getValueOrInsertAsCount(normalIds, normals, face.Normal);
-                uint texCoordId = getValueOrInsertAsCount(texCoordIds, texCoords, new Vector2D<double>(face.Flow / face.Area, face.Flow));
+                uint texCoordId = getValueOrInsertAsCount(texCoordIds, texCoords, new Vector2D<double>(face.FlowIntensity, 0));
 
                 faces.Add(((vertex1Id, texCoordId, normalId), (vertex2Id, texCoordId, normalId), (vertex3Id, texCoordId, normalId)));
             }

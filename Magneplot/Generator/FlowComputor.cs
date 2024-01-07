@@ -10,8 +10,7 @@ namespace Magneplot.Generator
     {
         const double Mo = 4 * Math.PI * 0.0000001;
         const double MoOver4Pi = 0.0000001;
-        const double I = 1;
-        public static void ComputeFlowValues(List<Face> model, List<Vector3D<double>> curve)
+        public static void ComputeFlowValues(List<Face> model, List<Vector3D<double>> curve, double I)
         {
             int currentCount = 0;
             Parallel.For(0, model.Count, faceIndex =>
@@ -32,8 +31,8 @@ namespace Magneplot.Generator
                 }
 
                 Vector3D<double> netMagfield = MathUtils.AddAll(magfieldVecs);
-                Vector3D<double> areaVec = face.Area * Vector3D.Normalize(face.Normal);
-                face.Flow = Vector3D.Dot(netMagfield, areaVec);
+                Vector3D<double> areaVec = Vector3D.Normalize(face.Normal);
+                face.FlowIntensity = Vector3D.Dot(netMagfield, areaVec);
 
                 model[faceIndex] = face;
 

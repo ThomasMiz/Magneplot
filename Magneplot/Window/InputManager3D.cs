@@ -103,8 +103,10 @@ namespace Magneplot.Window
                 Thumbstick thumbstick = CurrentGamepad.Thumbsticks[0];
                 if (Math.Abs(thumbstick.Position) > 0.2f)
                 {
-                    CameraRotationY += thumbstick.X * dtSeconds * CameraThumbstickSensitivity;
-                    CameraRotationX = Math.Clamp(CameraRotationX - thumbstick.Y * dtSeconds * CameraThumbstickSensitivity, -1.57f, 1.57f);
+                    float rot = thumbstick.Direction + CameraRotationY + MathF.PI / 2f;
+                    float spd = thumbstick.Position * dtSeconds * CameraMoveSpeed;
+                    CameraPosition.X += MathF.Cos(rot) * spd;
+                    CameraPosition.Z += MathF.Sin(rot) * spd;
                 }
 
                 if (CurrentGamepad.Thumbsticks.Count >= 2)
@@ -112,10 +114,8 @@ namespace Magneplot.Window
                     thumbstick = CurrentGamepad.Thumbsticks[1];
                     if (Math.Abs(thumbstick.Position) > 0.2f)
                     {
-                        float rot = thumbstick.Direction + CameraRotationY + MathF.PI / 2f;
-                        float spd = thumbstick.Position * dtSeconds * CameraMoveSpeed;
-                        CameraPosition.X += MathF.Cos(rot) * spd;
-                        CameraPosition.Z += MathF.Sin(rot) * spd;
+                        CameraRotationY += thumbstick.X * dtSeconds * CameraThumbstickSensitivity;
+                        CameraRotationX = Math.Clamp(CameraRotationX - thumbstick.Y * dtSeconds * CameraThumbstickSensitivity, -1.57f, 1.57f);
                     }
                 }
 

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
-using Magneplot.Generator;
+using Silk.NET.Input;
 using Silk.NET.Maths;
 using TrippyGL;
 
@@ -11,10 +10,12 @@ namespace Magneplot.Window
 {
     class MagneplotWindow : WindowBase
     {
+        const float CameraMoveSpeed = 2.5f;
+        const float CameraMoveSpeedFast = CameraMoveSpeed * 5;
         VertexNormalTexture[] model;
         VertexPosition[] curve;
-
-        Stopwatch stopwatch;
+        double netFlow;
+        float maxColorRadius;
 
         InputManager3D inputManager;
 
@@ -28,13 +29,13 @@ namespace Magneplot.Window
         SimpleShaderProgram curveProgram;
         VertexBuffer<VertexPosition> curveBuffer;
 
-        float maxColorRadius;
-        float netFlow;
 
-        public MagneplotWindow(VertexNormalTexture[] model, VertexPosition[] curve) : base(null, 24)
+        public MagneplotWindow(double netFlow, VertexNormalTexture[] model, VertexPosition[] curve) : base(null, 24)
         {
             this.model = model;
             this.curve = curve;
+            this.netFlow = netFlow;
+            maxColorRadius = model.Select(v => MathF.Abs(v.TexCoords.X)).Max();
         }
 
         protected override void OnLoad()
@@ -84,8 +85,6 @@ namespace Magneplot.Window
 
             curveBuffer = new VertexBuffer<VertexPosition>(graphicsDevice, curve, BufferUsage.StaticDraw);
             modelBuffer = new VertexBuffer<VertexNormalTexture>(graphicsDevice, model, BufferUsage.StaticDraw);
-            maxColorRadius = model.Select(v => MathF.Abs(v.TexCoords.X)).Max();
-            netFlow = (float)MathUtils.AddAll(model.Select(v => (double)v.TexCoords.Y).ToArray());
             curve = null;
             model = null;
 
@@ -113,21 +112,18 @@ namespace Magneplot.Window
             graphicsDevice.ClearColor = Color4b.White;
             graphicsDevice.DepthState = DepthState.Default;
             graphicsDevice.BlendState = BlendState.Opaque;
-
-            stopwatch = Stopwatch.StartNew();
         }
 
         protected override void OnRender(double dt)
         {
-            float time = (float)stopwatch.Elapsed.TotalSeconds;
-            float camMoveSpeed = inputManager.CameraMoveSpeed;
-            if (inputManager.CurrentKeyboard != null && inputManager.CurrentKeyboard.IsKeyPressed(Silk.NET.Input.Key.ShiftLeft))
-            {
-                inputManager.CameraMoveSpeed = camMoveSpeed * 5;
-            }
+            bool fastCamera = inputManager.CurrentKeyboard?.IsKeyPressed(Key.ShiftLeft) == true
+                || inputManager.CurrentKeyboard?.IsKeyPressed(Key.ShiftRight) == true
+                || inputManager.CurrentGamepad?.LeftBumper().Pressed == true
+                || inputManager.CurrentGamepad?.RightBumper().Pressed == true;
+            inputManager.CameraMoveSpeed = fastCamera ? CameraMoveSpeedFast : CameraMoveSpeed;
+
             inputManager.Update((float)dt);
-            inputManager.CameraMoveSpeed = camMoveSpeed;
-            Window.Title = string.Format("colorRadius={0} - netFlow={1} - {2}", maxColorRadius, netFlow, inputManager.CameraPosition);
+            Window.Title = string.Format("colorRadius={0} | netFlow={1} | {2}", maxColorRadius, netFlow, inputManager.CameraPosition);
 
             graphicsDevice.Clear(ClearBuffers.Color | ClearBuffers.Depth);
 
