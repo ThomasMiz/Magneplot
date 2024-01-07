@@ -6,12 +6,12 @@ namespace Magneplot.Generator.Curves
 {
     public class SpiralSource : CurveSource
     {
-        public double Radius { get; }
-        public double Theta { get; }
-        public double Step { get; }
-        public double MinY { get; }
-        public double MaxY { get; }
-        public uint Segments { get; }
+        public double Radius { get; set; }
+        public double Theta { get; set; }
+        public double Step { get; set; }
+        public double MinY { get; set; }
+        public double MaxY { get; set; }
+        public uint Segments { get; set; }
 
         public override string Name
         {

@@ -6,11 +6,11 @@ namespace Magneplot.Generator.Models
 {
     class CilinderSource : ModelSource
     {
-        public double Radius { get; }
-        public double MinY { get; }
-        public double MaxY { get; }
-        public uint RotationalSlices { get; }
-        public uint VerticalSlices { get; }
+        public double Radius { get; set; }
+        public double MinY { get; set; }
+        public double MaxY { get; set; }
+        public uint RotationalSlices { get; set; }
+        public uint VerticalSlices { get; set; }
 
         public override string Name
         {

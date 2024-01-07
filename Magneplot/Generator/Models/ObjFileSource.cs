@@ -6,8 +6,8 @@ namespace Magneplot.Generator.Models
 {
     class ObjFileSource : ModelSource
     {
-        public string File { get; }
-        public bool OverrideObjNormals { get; }
+        public string File { get; set; }
+        public bool OverrideObjNormals { get; set; }
 
         public override string Name
         {

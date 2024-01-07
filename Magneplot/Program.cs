@@ -14,13 +14,12 @@ namespace Magneplot
 {
     internal class Program
     {
+        static string JsonConfigFile = "config.json";
         static string OutputFileBasePath = "models";
 
         static void Main(string[] args)
         {
-            Config config = Config.PlaneConfig;
-            //Config config = Config.CilinderConfig;
-            //Config config = Config.CarpinchoConfig;
+            Config config = Config.DeserializeFromFile(JsonConfigFile);
 
             string filename = Path.Combine(OutputFileBasePath, config.Name + ".mobj");
 

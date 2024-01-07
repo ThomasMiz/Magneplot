@@ -1,0 +1,24 @@
+{
+  "model": {
+    "type": "cilinder",
+    "config": {
+      "radius": 0.3,
+      "minY": 0,
+      "maxY": 40,
+      "rotationalSlices": 150,
+      "verticalSlices": 2400
+    }
+  },
+  "curve": {
+    "type": "spiral",
+    "config": {
+      "radius": 1.2,
+      "theta": 0,
+      "step": 99999,
+      "minY": 0,
+      "maxY": 40,
+      "segments": 3200
+    }
+  },
+  "I": 1
+}

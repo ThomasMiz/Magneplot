@@ -33,7 +33,7 @@ namespace Magneplot.Generator.Models
 
         public override List<Face> GetModel()
         {
-            Vector3D<double> normal = -Vector3D<double>.UnitZ;
+            Vector3D<double> normal = Vector3D<double>.UnitZ;
 
             List<Face> plane = new();
             for (uint yi = 0; yi < VerticalSlices; yi++)

@@ -10,8 +10,15 @@ namespace Magneplot.Window
 {
     class MagneplotWindow : WindowBase
     {
+        /// <summary>The camera's default movement speed.</summary>
         const float CameraMoveSpeed = 2.5f;
+
+        /// <summary>The camera's fast movement speed.</summary>
         const float CameraMoveSpeedFast = CameraMoveSpeed * 5;
+
+        /// <summary>A small offset applied to the model and curve to prevent them from overlapping with the coordinate grid.</summary>
+        static Vector3 ModelTranslation = new Vector3(0.1f, 0.1f, 0.1f);
+
         VertexNormalTexture[] model;
         VertexPosition[] curve;
         double netFlow;
@@ -90,7 +97,7 @@ namespace Magneplot.Window
 
             modelProgram = ShaderProgram.FromFiles<VertexNormalTexture>(graphicsDevice, "data/model.vs", "data/model.fs", "vPosition", "vNormal", "vTexCoords");
             modelProgram.Uniforms["modelAlpha"].SetValueFloat(0.5f);
-            modelProgram.Uniforms["World"].SetValueMat4(Matrix4x4.CreateTranslation(0.1f, 0.1f, 0.1f));
+            modelProgram.Uniforms["World"].SetValueMat4(Matrix4x4.CreateTranslation(ModelTranslation));
             modelProgram.Uniforms["ambientLightColor"].SetValueVec3(Vector3.One);
 
             // To re-enable the fragment shader's lighting, uncomment this, the code calling calcDirLight in the shader code (data/model.fs:48)

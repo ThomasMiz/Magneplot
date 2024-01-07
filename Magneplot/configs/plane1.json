@@ -1,0 +1,25 @@
+{
+  "model": {
+    "type": "plane",
+    "config": {
+      "minX": -0.6,
+      "maxX": 0.6,
+      "minY": 0,
+      "maxY": 20,
+      "horizontalSlices": 40,
+      "verticalSlices": 600
+    }
+  },
+  "curve": {
+    "type": "spiral",
+    "config": {
+      "radius": 0.8,
+      "theta": 0,
+      "step": 99999,
+      "minY": 0,
+      "maxY": 20,
+      "segments": 1600
+    }
+  },
+  "I": 1
+}
