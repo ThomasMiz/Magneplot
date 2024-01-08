@@ -7,19 +7,22 @@ namespace Magneplot.Generator.Curves
 {
     class SpiralSource : CurveSource
     {
+        public Vector3D<double> Center { get; set; } = Vector3D<double>.Zero;
+
+        [JsonRequired]
+        public Vector3D<double> Direction { get; set; }
+
+        [JsonRequired]
+        public Vector3D<double> StartTowards { get; set; }
+
         [JsonRequired]
         public double Radius { get; set; }
 
-        public double Theta { get; set; }
+        [JsonRequired]
+        public double Length { get; set; }
 
         [JsonRequired]
         public double Step { get; set; }
-
-        [JsonRequired]
-        public double MinY { get; set; }
-
-        [JsonRequired]
-        public double MaxY { get; set; }
 
         [JsonRequired]
         public uint Segments { get; set; }
@@ -28,25 +31,44 @@ namespace Magneplot.Generator.Curves
         {
             get
             {
-                uint hashId = MathUtils.HashToUint(Radius, Theta, Step, MinY, MaxY, Segments);
+                NormalizeVectors();
+                uint hashId = MathUtils.HashToUint(
+                    Center.X, Center.Y, Center.Z, Direction.X, Direction.Y, Direction.Z,
+                    StartTowards.X, StartTowards.Y, StartTowards.Z, Radius, Length, Step, Segments
+                );
+
                 return "Spiral." + hashId;
             }
         }
 
+        public void NormalizeVectors()
+        {
+            Direction = Vector3D.Normalize(Direction);
+
+            double d = Vector3D.Dot(StartTowards, Direction);
+            if (Math.Abs(d) > 0.9 * StartTowards.Length)
+                throw new FormatException("The startTowards vector must not be parallel to the direction vector");
+            StartTowards -= d * Direction;
+            StartTowards = Vector3D.Normalize(StartTowards);
+        }
+
         public override List<Vector3D<double>> GetCurve()
         {
-            double minT = MinY * MathUtils.TwoPi / Step;
-            double maxT = MaxY * MathUtils.TwoPi / Step;
+            NormalizeVectors();
+            double maxT = Length * MathUtils.TwoPi / Step;
+            double halfLength = Length / 2;
 
             List<Vector3D<double>> curve = new();
             for (uint i = 0; i <= Segments; i++)
             {
-                double t = MathUtils.Lerp(minT, maxT, i / (double)Segments);
-                curve.Add(new Vector3D<double>(
-                    Math.Cos(t + Theta) * Radius,
-                    t * Step / MathUtils.TwoPi,
-                    Math.Sin(t + Theta) * Radius
-                ));
+                double t = i / (double)Segments;
+                Matrix4X4<double> mat = Matrix4X4.CreateFromAxisAngle(Direction, maxT * t);
+
+                curve.Add(
+                    Center
+                    + Direction * MathUtils.Lerp(-halfLength, halfLength, t)
+                    + Radius * Vector3D.Transform(StartTowards, mat)
+                );
             }
 
             return curve;

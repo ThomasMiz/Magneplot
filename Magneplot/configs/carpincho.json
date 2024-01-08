@@ -9,11 +9,12 @@
   "curve": {
     "type": "spiral",
     "config": {
+      "center": { "y": 1 },
+      "direction": { "y": -1 },
+      "startTowards": { "x": 1 },
       "radius": 5,
-      "theta": 0,
+      "length": 4,
       "step": 0.2,
-      "minY": -1,
-      "maxY": 3,
       "segments": 12000
     }
   },
