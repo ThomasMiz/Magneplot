@@ -1,65 +1,90 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Silk.NET.Maths;
 
 namespace Magneplot.Generator.Models
 {
     public class PlaneSource : ModelSource
     {
-        public double MinX { get; set; }
-        public double MaxX { get; set; }
-        public double MinY { get; set; }
-        public double MaxY { get; set; }
+        public Vector3D<double> Center { get; set; }
+
+        [JsonRequired]
+        public Vector3D<double> HorizontalVector { get; set; }
+
+        [JsonRequired]
+        public Vector3D<double> VerticalVector { get; set; }
+
+        [JsonRequired]
+        public double Width { get; set; }
+
+        [JsonRequired]
+        public double Height { get; set; }
+
+        [JsonRequired]
         public uint HorizontalSlices { get; set; }
+
+        [JsonRequired]
         public uint VerticalSlices { get; set; }
 
         public override string Name
         {
             get
             {
-                uint hashId = MathUtils.HashToUint(MinX, MaxX, MinY, MaxY, HorizontalSlices, VerticalSlices);
+                NormalizeVectors();
+                uint hashId = MathUtils.HashToUint(
+                    Center.X, Center.Y, Center.Z,
+                    HorizontalVector.X, HorizontalVector.Y, HorizontalVector.Z,
+                    VerticalVector.X, VerticalVector.Y, VerticalVector.Z,
+                    Width, Height, HorizontalSlices, VerticalSlices
+                );
+
                 return "Plane." + hashId;
             }
         }
 
-        public PlaneSource(double width, double height, uint horizontalSlices, uint verticalSlices)
+        public void NormalizeVectors()
         {
-            MaxX = width / 2.0;
-            MinX = -MaxX;
-            MinY = 0;
-            MaxY = height;
-            HorizontalSlices = horizontalSlices;
-            VerticalSlices = verticalSlices;
+            HorizontalVector = Vector3D.Normalize(HorizontalVector);
+            VerticalVector = Vector3D.Normalize(VerticalVector);
+
         }
 
         public override List<Face> GetModel()
         {
-            Vector3D<double> normal = Vector3D<double>.UnitZ;
+            NormalizeVectors();
+            double halfWidth = Width / 2;
+            double halfHeight = Height / 2;
+
+            Vector3D<double> normal = Vector3D.Normalize(Vector3D.Cross(HorizontalVector, VerticalVector));
 
             List<Face> plane = new();
             for (uint yi = 0; yi < VerticalSlices; yi++)
             {
                 for (uint xi = 0; xi < HorizontalSlices; xi++)
                 {
-                    double fromX = MathUtils.Lerp(MinX, MaxX, xi / (double)HorizontalSlices);
-                    double toX = MathUtils.Lerp(MinX, MaxX, (xi + 1) / (double)HorizontalSlices);
-                    double fromY = MathUtils.Lerp(MinY, MaxY, yi / (double)VerticalSlices);
-                    double toY = MathUtils.Lerp(MinY, MaxY, (yi + 1) / (double)VerticalSlices);
+                    double xmix = xi / (double)HorizontalSlices;
+                    double xmix2 = (xi + 1) / (double)HorizontalSlices;
+                    double ymix = yi / (double)VerticalSlices;
+                    double ymix2 = (yi + 1) / (double)VerticalSlices;
 
-                    plane.Add(new Face(
-                        new Vector3D<double>(fromX, fromY, 0),
-                        new Vector3D<double>(fromX, toY, 0),
-                        new Vector3D<double>(toX, fromY, 0),
-                        normal,
-                        0
-                    ));
+                    Vector3D<double> v1 = Center
+                        + HorizontalVector * MathUtils.Lerp(-halfWidth, halfWidth, xmix)
+                        + VerticalVector * MathUtils.Lerp(-halfHeight, halfHeight, ymix);
 
-                    plane.Add(new Face(
-                        new Vector3D<double>(toX, fromY, 0),
-                        new Vector3D<double>(fromX, toY, 0),
-                        new Vector3D<double>(toX, toY, 0),
-                        normal,
-                        0
-                    ));
+                    Vector3D<double> v2 = Center
+                        + HorizontalVector * MathUtils.Lerp(-halfWidth, halfWidth, xmix)
+                        + VerticalVector * MathUtils.Lerp(-halfHeight, halfHeight, ymix2);
+
+                    Vector3D<double> v3 = Center
+                        + HorizontalVector * MathUtils.Lerp(-halfWidth, halfWidth, xmix2)
+                        + VerticalVector * MathUtils.Lerp(-halfHeight, halfHeight, ymix2);
+
+                    Vector3D<double> v4 = Center
+                        + HorizontalVector * MathUtils.Lerp(-halfWidth, halfWidth, xmix2)
+                        + VerticalVector * MathUtils.Lerp(-halfHeight, halfHeight, ymix);
+
+                    plane.Add(new Face(v1, v2, v4, normal, 0));
+                    plane.Add(new Face(v4, v2, v3, normal, 0));
                 }
             }
 

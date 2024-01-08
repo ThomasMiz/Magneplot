@@ -10,7 +10,22 @@ namespace Magneplot.Generator
 {
     public record Config(ModelSource ModelSource, CurveSource CurveSource, double I = 1)
     {
+
         public string Name => ModelSource.Name + "-" + CurveSource.Name;
+
+        private static JsonSerializerOptions serializerOptions = new()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            AllowTrailingCommas = true,
+            IncludeFields = true,
+            IgnoreReadOnlyProperties = true,
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            WriteIndented = true,
+            UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip,
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            NumberHandling = JsonNumberHandling.AllowReadingFromString,
+        };
 
         public void SerializeToFile(string filename)
         {
@@ -22,23 +37,10 @@ namespace Magneplot.Generator
 
         public JsonObject Serialize()
         {
-            JsonSerializerOptions options = new()
-            {
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                AllowTrailingCommas = true,
-                IgnoreReadOnlyProperties = true,
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                WriteIndented = true,
-                UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip,
-                PropertyNameCaseInsensitive = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                NumberHandling = JsonNumberHandling.AllowReadingFromString,
-            };
-
             JsonObject obj = new(new JsonNodeOptions() { PropertyNameCaseInsensitive = true })
             {
-                { "model", SerializeModel(options) },
-                { "curve", SerializeCurve(options) },
+                { "model", SerializeModel(serializerOptions) },
+                { "curve", SerializeCurve(serializerOptions) },
                 { "I", I },
             };
 
@@ -105,30 +107,18 @@ namespace Magneplot.Generator
 
         public static Config DeserializeFromFile(string filename)
         {
-            JsonNodeOptions nodeOpts = new JsonNodeOptions() { PropertyNameCaseInsensitive = true };
-            JsonDocumentOptions docOpts = new JsonDocumentOptions() { AllowTrailingCommas = true, CommentHandling = JsonCommentHandling.Skip };
+            JsonNodeOptions nodeOpts = new JsonNodeOptions() { PropertyNameCaseInsensitive = serializerOptions.PropertyNameCaseInsensitive };
+            JsonDocumentOptions docOpts = new JsonDocumentOptions() { AllowTrailingCommas = serializerOptions.AllowTrailingCommas, CommentHandling = serializerOptions.ReadCommentHandling };
+
             using FileStream stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
             return Deserialize(JsonNode.Parse(stream, nodeOpts, docOpts).AsObject());
         }
 
         public static Config Deserialize(JsonObject obj)
         {
-            JsonSerializerOptions options = new()
-            {
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                AllowTrailingCommas = true,
-                IgnoreReadOnlyProperties = true,
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                WriteIndented = true,
-                UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip,
-                PropertyNameCaseInsensitive = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                NumberHandling = JsonNumberHandling.AllowReadingFromString,
-            };
-
             return new Config(
-                DeserializeModel(obj["model"]?.AsObject() ?? throw new JsonException("\"model\" field not found on JSON object"), options),
-                DeserializeCurve(obj["curve"]?.AsObject() ?? throw new JsonException("\"curve\" field not found on JSON object"), options),
+                DeserializeModel(obj["model"]?.AsObject() ?? throw new JsonException("\"model\" field not found on JSON object"), serializerOptions),
+                DeserializeCurve(obj["curve"]?.AsObject() ?? throw new JsonException("\"curve\" field not found on JSON object"), serializerOptions),
                 obj["I"].GetValue<double>()
             );
         }

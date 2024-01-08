@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Silk.NET.Maths;
 using TrippyGL;
 
@@ -6,7 +7,9 @@ namespace Magneplot.Generator.Models
 {
     class ObjFileSource : ModelSource
     {
+        [JsonRequired]
         public string File { get; set; }
+
         public bool OverrideObjNormals { get; set; }
 
         public override string Name
@@ -16,12 +19,6 @@ namespace Magneplot.Generator.Models
                 uint hashId = unchecked((uint)File.GetHashCode32());
                 return "Obj." + hashId;
             }
-        }
-
-        public ObjFileSource(string file, bool overrideObjNormals)
-        {
-            File = file;
-            OverrideObjNormals = overrideObjNormals;
         }
 
         public override List<Face> GetModel()

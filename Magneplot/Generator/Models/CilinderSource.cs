@@ -1,15 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Silk.NET.Maths;
 
 namespace Magneplot.Generator.Models
 {
     class CilinderSource : ModelSource
     {
+        [JsonRequired]
         public double Radius { get; set; }
+
+        [JsonRequired]
         public double MinY { get; set; }
+
+        [JsonRequired]
         public double MaxY { get; set; }
+
+        [JsonRequired]
         public uint RotationalSlices { get; set; }
+
+        [JsonRequired]
         public uint VerticalSlices { get; set; }
 
         public override string Name
@@ -19,15 +29,6 @@ namespace Magneplot.Generator.Models
                 uint hashId = MathUtils.HashToUint(Radius, MinY, MaxY, RotationalSlices, VerticalSlices);
                 return "Cilinder." + hashId;
             }
-        }
-
-        public CilinderSource(double radius, double minY, double maxY, uint rotationalSlices, uint verticalSlices)
-        {
-            Radius = radius;
-            MinY = minY;
-            MaxY = maxY;
-            RotationalSlices = rotationalSlices;
-            VerticalSlices = verticalSlices;
         }
 
         public override List<Face> GetModel()

@@ -39,7 +39,7 @@ vec3 calcPosLight(in vec3 norm, in vec3 toCamVec, in vec3 lPos, in vec3 diffCol,
 }
 
 void main() {
-    float mixval = clamp((fTexCoords.x - minMaxFlow.x) / (minMaxFlow.y - minMaxFlow.x), -10, 10);
+    float mixval = clamp((fTexCoords.x - minMaxFlow.x) / (minMaxFlow.y - minMaxFlow.x), 0, 1);
     vec4 finalColor = vec4(mix(negativeColor, positiveColor, mixval), modelAlpha);
     vec3 unitNormal = normalize(fNormal);
     vec3 unitToCameraVec = normalize(cameraPos - fPosition);
