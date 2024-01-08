@@ -75,7 +75,7 @@ namespace Magneplot.Generator.Curves
             double maxT = Length * MathUtils.TwoPi / Step;
             double halfLength = Length / 2;
 
-            List<Vector3D<double>> curve = new();
+            List<Vector3D<double>> curve = [];
             for (uint i = 0; i <= Segments; i++)
             {
                 double t = i / (double)Segments;

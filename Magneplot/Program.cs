@@ -14,10 +14,10 @@ namespace Magneplot
 {
     class Program
     {
-        static string JsonConfigFile = "configs/config.json";
-        static string OutputFileBasePath = "models";
+        static readonly string JsonConfigFile = "configs/config.json";
+        static readonly string OutputFileBasePath = "models";
 
-        static void Main(string[] args)
+        static void Main()
         {
             Config config = Config.DeserializeFromFile(JsonConfigFile);
 
@@ -30,7 +30,7 @@ namespace Magneplot
             if (File.Exists(filename))
             {
                 Console.WriteLine("Reading file: {0}", filename);
-                using StreamReader stream = new StreamReader(File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read));
+                using StreamReader stream = new(File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read));
                 netFlow = double.Parse(stream.ReadLine());
                 curveVertex = CurveFile.FromStream(stream).Select(v => new VertexPosition((float)v.X, (float)v.Y, (float)v.Z)).ToArray();
                 modelVertex = OBJLoader.FromStream<VertexNormalTexture>(stream);
@@ -53,7 +53,7 @@ namespace Magneplot
 
                 Console.WriteLine("Saving to file: {0}", filename);
                 Directory.CreateDirectory(OutputFileBasePath);
-                using StreamWriter stream = new StreamWriter(File.Open(filename, FileMode.Create, FileAccess.Write, FileShare.Read));
+                using StreamWriter stream = new(File.Open(filename, FileMode.Create, FileAccess.Write, FileShare.Read));
                 stream.Write("{0:R}\n", netFlow);
                 CurveFile.SaveToStream(stream, curve);
                 OBJSaver.SaveToStream(model, stream);

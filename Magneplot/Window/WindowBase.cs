@@ -77,7 +77,7 @@ namespace Magneplot.Window
 
             IMonitor mainMonitor = Monitor.GetMainMonitor(null);
             Vector2D<int> windowSize = GetNewWindowSize(mainMonitor);
-            WindowOptions windowOpts = new WindowOptions()
+            WindowOptions windowOpts = new()
             {
                 API = new GraphicsAPI(ContextAPI.OpenGL, ContextProfile.Core, ContextFlags.Debug, new APIVersion(3, 3)),
                 VSync = false,

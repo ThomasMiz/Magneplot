@@ -56,7 +56,7 @@ namespace Magneplot.Generator.Models
 
             Vector3D<double> normal = Vector3D.Normalize(Vector3D.Cross(HorizontalVector, VerticalVector));
 
-            List<Face> plane = new();
+            List<Face> plane = [];
             for (uint yi = 0; yi < VerticalSlices; yi++)
             {
                 for (uint xi = 0; xi < HorizontalSlices; xi++)

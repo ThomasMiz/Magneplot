@@ -26,7 +26,7 @@ namespace Magneplot.Generator.Curves
 
         public override List<Vector3D<double>> GetCurve()
         {
-            List<Vector3D<double>> curve = new();
+            List<Vector3D<double>> curve = [];
             for (uint i = 0; i <= Segments; i++)
             {
                 curve.Add(Vector3D.Lerp(From, To, i / (double)Segments));

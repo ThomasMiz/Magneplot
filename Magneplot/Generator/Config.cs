@@ -12,7 +12,7 @@ namespace Magneplot.Generator
     {
         public string Name => ModelSource.Name + "-" + CurveSource.Name;
 
-        private static JsonSerializerOptions serializerOptions = new()
+        private static readonly JsonSerializerOptions serializerOptions = new()
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             AllowTrailingCommas = true,
@@ -29,7 +29,7 @@ namespace Magneplot.Generator
         public void SerializeToFile(string filename)
         {
             JsonWriterOptions opts = new() { Indented = true };
-            using Utf8JsonWriter writer = new Utf8JsonWriter(File.Open(filename, FileMode.Create, FileAccess.Write, FileShare.Read), opts);
+            using Utf8JsonWriter writer = new(File.Open(filename, FileMode.Create, FileAccess.Write, FileShare.Read), opts);
             JsonObject s = Serialize();
             s.WriteTo(writer);
         }
@@ -106,8 +106,8 @@ namespace Magneplot.Generator
 
         public static Config DeserializeFromFile(string filename)
         {
-            JsonNodeOptions nodeOpts = new JsonNodeOptions() { PropertyNameCaseInsensitive = serializerOptions.PropertyNameCaseInsensitive };
-            JsonDocumentOptions docOpts = new JsonDocumentOptions() { AllowTrailingCommas = serializerOptions.AllowTrailingCommas, CommentHandling = serializerOptions.ReadCommentHandling };
+            JsonNodeOptions nodeOpts = new() { PropertyNameCaseInsensitive = serializerOptions.PropertyNameCaseInsensitive };
+            JsonDocumentOptions docOpts = new() { AllowTrailingCommas = serializerOptions.AllowTrailingCommas, CommentHandling = serializerOptions.ReadCommentHandling };
 
             using FileStream stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
             return Deserialize(JsonNode.Parse(stream, nodeOpts, docOpts).AsObject());

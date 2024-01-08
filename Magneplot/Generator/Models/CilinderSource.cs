@@ -75,7 +75,7 @@ namespace Magneplot.Generator.Models
             NormalizeVectors();
             double halfLength = Length / 2;
 
-            List<Face> cilinder = new();
+            List<Face> cilinder = [];
 
             for (uint ri = 0; ri < RotationalSlices; ri++)
             {

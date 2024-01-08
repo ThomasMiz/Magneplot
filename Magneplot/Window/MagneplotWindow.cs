@@ -17,12 +17,12 @@ namespace Magneplot.Window
         const float CameraMoveSpeedFast = CameraMoveSpeed * 5;
 
         /// <summary>A small offset applied to the model and curve to prevent them from overlapping with the coordinate grid.</summary>
-        static Vector3 ModelTranslation = new Vector3(0.1f, 0.1f, 0.1f);
+        static Vector3 ModelTranslation = new(0.1f, 0.1f, 0.1f);
 
         VertexNormalTexture[] model;
         VertexPosition[] curve;
-        double netFlow;
-        float maxColorRadius;
+        readonly double netFlow;
+        readonly float maxColorRadius;
 
         InputManager3D inputManager;
 
@@ -35,7 +35,6 @@ namespace Magneplot.Window
 
         SimpleShaderProgram curveProgram;
         VertexBuffer<VertexPosition> curveBuffer;
-
 
         public MagneplotWindow(double netFlow, VertexNormalTexture[] model, VertexPosition[] curve) : base(null, 24)
         {
@@ -55,20 +54,20 @@ namespace Magneplot.Window
                 CameraRotationY = -2.0f,
             };
 
-            Span<VertexColor> crossLines = stackalloc VertexColor[]
-            {
+            Span<VertexColor> crossLines =
+            [
                 new VertexColor(new Vector3(0, 0, 0), Color4b.Lime),
                 new VertexColor(new Vector3(0, 1, 0), Color4b.Lime),
                 new VertexColor(new Vector3(0, 0, 0), Color4b.Red),
                 new VertexColor(new Vector3(1, 0, 0), Color4b.Red),
                 new VertexColor(new Vector3(0, 0, 0), Color4b.Blue),
                 new VertexColor(new Vector3(0, 0, 1), Color4b.Blue),
-            };
+            ];
 
             crossBuffer = new VertexBuffer<VertexColor>(graphicsDevice, crossLines, BufferUsage.StaticDraw);
 
-            Span<VertexPosition> cube = stackalloc VertexPosition[]
-            {
+            Span<VertexPosition> cube =
+            [
                 new Vector3(-0.5f, -0.5f, -0.5f),
                 new Vector3(-0.5f, -0.5f, 0.5f),
                 new Vector3(-0.5f, 0.5f, -0.5f),
@@ -83,7 +82,7 @@ namespace Magneplot.Window
                 new Vector3(0.5f, 0.5f, 0.5f),
                 new Vector3(0.5f, -0.5f, -0.5f),
                 new Vector3(0.5f, -0.5f, 0.5f),
-            };
+            ];
 
             VertexColor[] linesArray = CreateLines();
             linesBuffer = new VertexBuffer<VertexColor>(graphicsDevice, linesArray, BufferUsage.StaticDraw);
@@ -190,20 +189,20 @@ namespace Magneplot.Window
         {
             const float d = 100;
 
-            List<VertexColor> lines = new List<VertexColor>
-            {
+            List<VertexColor> lines =
+            [
                 new VertexColor(new Vector3(-d, 0, 0), Color4b.Red),
                 new VertexColor(new Vector3(d, 0, 0), Color4b.Red),
                 new VertexColor(new Vector3(0, -d, 0), Color4b.Lime),
                 new VertexColor(new Vector3(0, d, 0), Color4b.Lime),
                 new VertexColor(new Vector3(0, 0, -d), Color4b.Blue),
                 new VertexColor(new Vector3(0, 0, d), Color4b.Blue)
-            };
+            ];
 
             const byte secondaryLineAlpha = 64;
-            Color4b darkRed = new Color4b(255, 0, 0, secondaryLineAlpha);
-            Color4b darkGreen = new Color4b(0, 255, 0, secondaryLineAlpha);
-            Color4b darkBlue = new Color4b(0, 0, 255, secondaryLineAlpha);
+            Color4b darkRed = new(255, 0, 0, secondaryLineAlpha);
+            Color4b darkGreen = new(0, 255, 0, secondaryLineAlpha);
+            Color4b darkBlue = new(0, 0, 255, secondaryLineAlpha);
 
             for (int i = 1; i < 5; i++)
             {

@@ -18,22 +18,22 @@ namespace Magneplot.Generator
         }
         public static void SaveToFile(List<Face> model, string fileName)
         {
-            using StreamWriter stream = new StreamWriter(File.Open(fileName, FileMode.Create, FileAccess.Write, FileShare.Read));
+            using StreamWriter stream = new(File.Open(fileName, FileMode.Create, FileAccess.Write, FileShare.Read));
             SaveToStream(model, stream);
         }
 
         public static void SaveToStream(List<Face> model, StreamWriter stream)
         {
-            List<Vector3D<double>> vertex = new();
-            List<Vector3D<double>> normals = new();
-            List<Vector2D<double>> texCoords = new();
+            List<Vector3D<double>> vertex = [];
+            List<Vector3D<double>> normals = [];
+            List<Vector2D<double>> texCoords = [];
 
-            Dictionary<Vector3D<double>, uint> vertexIds = new();
-            Dictionary<Vector3D<double>, uint> normalIds = new();
-            Dictionary<Vector2D<double>, uint> texCoordIds = new();
+            Dictionary<Vector3D<double>, uint> vertexIds = [];
+            Dictionary<Vector3D<double>, uint> normalIds = [];
+            Dictionary<Vector2D<double>, uint> texCoordIds = [];
 
             // (positionId, texCoordId, normalId)
-            List<((uint, uint, uint), (uint, uint, uint), (uint, uint, uint))> faces = new();
+            List<((uint, uint, uint), (uint, uint, uint), (uint, uint, uint))> faces = [];
 
             foreach (Face face in model)
             {
