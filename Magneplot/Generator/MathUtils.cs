@@ -17,6 +17,11 @@ namespace Magneplot.Generator
             return (v1.X * (v2.Y - v3.Y) + v2.X * (v3.Y - v1.Y) + v3.X * (v1.Y - v2.Y)) / 2;
         }
 
+        public static uint CiclycalShiftRight(uint value, int amount)
+        {
+            return value << amount | value >> ((sizeof(uint) * 8) - amount);
+        }
+
         public static uint HashToUint(params object[] values)
         {
             uint hashCode = 0;
@@ -24,7 +29,7 @@ namespace Magneplot.Generator
             {
                 foreach (var item in values)
                 {
-                    hashCode = hashCode * 397 ^ (uint)item.GetHashCode();
+                    hashCode = CiclycalShiftRight(hashCode, 7) ^ (uint)(item?.GetHashCode() ?? 0);
                 }
             }
 

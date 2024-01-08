@@ -14,7 +14,7 @@ namespace Magneplot
 {
     class Program
     {
-        static string JsonConfigFile = "config.json";
+        static string JsonConfigFile = "configs/config.json";
         static string OutputFileBasePath = "models";
 
         static void Main(string[] args)

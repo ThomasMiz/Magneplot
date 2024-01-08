@@ -46,7 +46,6 @@ namespace Magneplot.Generator.Models
         {
             HorizontalVector = Vector3D.Normalize(HorizontalVector);
             VerticalVector = Vector3D.Normalize(VerticalVector);
-
         }
 
         public override List<Face> GetModel()
