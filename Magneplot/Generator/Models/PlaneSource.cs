@@ -6,7 +6,7 @@ namespace Magneplot.Generator.Models
 {
     public class PlaneSource : ModelSource
     {
-        public Vector3D<double> Center { get; set; }
+        public Vector3D<double> Center { get; set; } = Vector3D<double>.Zero;
 
         [JsonRequired]
         public Vector3D<double> HorizontalVector { get; set; }

@@ -10,30 +10,42 @@ namespace Magneplot.Generator.Models
         [JsonRequired]
         public string File { get; set; }
 
-        public bool OverrideObjNormals { get; set; }
+        public Vector3D<double> Translation { get; set; } = Vector3D<double>.Zero;
+        public Vector3D<double> Scale { get; set; } = Vector3D<double>.One;
+        public YawPitchRoll Rotation { get; set; } = YawPitchRoll.Zero;
+        public bool OverrideObjNormals { get; set; } = false;
 
         public override string Name
         {
             get
             {
-                uint hashId = unchecked((uint)File.GetHashCode32());
+                uint hashId = MathUtils.HashToUint(
+                    File.GetHashCode32(), Translation.X, Translation.Y, Translation.Z,
+                    Scale.X, Scale.Y, Scale.Z, Rotation.Yaw, Rotation.Pitch, Rotation.Roll,
+                    OverrideObjNormals
+                );
+
                 return "Obj." + hashId;
             }
         }
 
         public override List<Face> GetModel()
         {
+            Matrix4X4<double> matrix = Matrix4X4.CreateScale(Scale)
+                * Matrix4X4.CreateFromYawPitchRoll(Rotation.Yaw, Rotation.Pitch, Rotation.Roll)
+                * Matrix4X4.CreateTranslation(Translation);
+
             if (OverrideObjNormals)
             {
-                return GetModelWithOverridenNormals();
+                return GetModelWithOverridenNormals(matrix);
             }
             else
             {
-                return GetModelWithBuiltinNormals();
+                return GetModelWithBuiltinNormals(matrix);
             }
         }
 
-        private List<Face> GetModelWithOverridenNormals()
+        private List<Face> GetModelWithOverridenNormals(in Matrix4X4<double> matrix)
         {
             VertexPosition[] vertices = OBJLoader.FromFile<VertexPosition>(File);
             List<Face> faces = new();
@@ -43,6 +55,10 @@ namespace Magneplot.Generator.Models
                 Vector3D<double> v1 = new Vector3D<double>(vertices[i].Position.X, vertices[i].Position.Y, vertices[i].Position.Z);
                 Vector3D<double> v2 = new Vector3D<double>(vertices[i + 1].Position.X, vertices[i + 1].Position.Y, vertices[i + 1].Position.Z);
                 Vector3D<double> v3 = new Vector3D<double>(vertices[i + 2].Position.X, vertices[i + 2].Position.Y, vertices[i + 2].Position.Z);
+                v1 = Vector3D.Transform(v1, matrix);
+                v2 = Vector3D.Transform(v2, matrix);
+                v3 = Vector3D.Transform(v3, matrix);
+
                 Vector3D<double> v12 = (v1 + v2) / 2;
                 Vector3D<double> v13 = (v1 + v3) / 2;
                 Vector3D<double> v23 = (v2 + v3) / 2;
@@ -57,7 +73,7 @@ namespace Magneplot.Generator.Models
             return faces;
         }
 
-        private List<Face> GetModelWithBuiltinNormals()
+        private List<Face> GetModelWithBuiltinNormals(in Matrix4X4<double> matrix)
         {
             VertexNormal[] vertices = OBJLoader.FromFile<VertexNormal>(File);
             List<Face> faces = new();
@@ -67,6 +83,10 @@ namespace Magneplot.Generator.Models
                 Vector3D<double> v1 = new Vector3D<double>(vertices[i].Position.X, vertices[i].Position.Y, vertices[i].Position.Z);
                 Vector3D<double> v2 = new Vector3D<double>(vertices[i + 1].Position.X, vertices[i + 1].Position.Y, vertices[i + 1].Position.Z);
                 Vector3D<double> v3 = new Vector3D<double>(vertices[i + 2].Position.X, vertices[i + 2].Position.Y, vertices[i + 2].Position.Z);
+                v1 = Vector3D.Transform(v1, matrix);
+                v2 = Vector3D.Transform(v2, matrix);
+                v3 = Vector3D.Transform(v3, matrix);
+
                 Vector3D<double> v12 = (v1 + v2) / 2;
                 Vector3D<double> v13 = (v1 + v3) / 2;
                 Vector3D<double> v23 = (v2 + v3) / 2;
@@ -74,6 +94,9 @@ namespace Magneplot.Generator.Models
                 Vector3D<double> n1 = new Vector3D<double>(vertices[i].Normal.X, vertices[i].Normal.Y, vertices[i].Normal.Z);
                 Vector3D<double> n2 = new Vector3D<double>(vertices[i + 1].Normal.X, vertices[i + 1].Normal.Y, vertices[i + 1].Normal.Z);
                 Vector3D<double> n3 = new Vector3D<double>(vertices[i + 2].Normal.X, vertices[i + 2].Normal.Y, vertices[i + 2].Normal.Z);
+                n1 = Vector3D.TransformNormal(n1, matrix);
+                n2 = Vector3D.TransformNormal(n2, matrix);
+                n3 = Vector3D.TransformNormal(n3, matrix);
 
                 // Subdivide this triangle into 4. Use the model's builtin normals:
                 faces.Add(new Face(v1, v12, v13, (4 * n1 + n2 + n3) / 6, 0));
