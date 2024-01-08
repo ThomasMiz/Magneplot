@@ -4,7 +4,7 @@ using Silk.NET.Maths;
 
 namespace Magneplot.Generator
 {
-    internal static class OBJSaver
+    static class OBJSaver
     {
         private static uint getValueOrInsertAsCount<T>(Dictionary<T, uint> dict, List<T> list, T value)
         {

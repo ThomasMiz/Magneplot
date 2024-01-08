@@ -8,9 +8,8 @@ using Magneplot.Generator.Models;
 
 namespace Magneplot.Generator
 {
-    public record Config(ModelSource ModelSource, CurveSource CurveSource, double I = 1)
+    record Config(ModelSource ModelSource, CurveSource CurveSource, double I = 1)
     {
-
         public string Name => ModelSource.Name + "-" + CurveSource.Name;
 
         private static JsonSerializerOptions serializerOptions = new()
@@ -151,7 +150,11 @@ namespace Magneplot.Generator
             string type = obj["type"]?.GetValue<string>() ?? throw new JsonException("\"type\" field not found in JSON curve object");
             JsonObject conf = obj["config"]?.AsObject() ?? throw new JsonException("\"config\" field not found in JSON curve object");
 
-            if (type.Equals("spiral", StringComparison.OrdinalIgnoreCase))
+            if (type.Equals("line", StringComparison.OrdinalIgnoreCase))
+            {
+                return JsonSerializer.Deserialize<LineSource>(conf, options);
+            }
+            else if (type.Equals("spiral", StringComparison.OrdinalIgnoreCase))
             {
                 return JsonSerializer.Deserialize<SpiralSource>(conf, options);
             }

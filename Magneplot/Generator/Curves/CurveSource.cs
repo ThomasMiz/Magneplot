@@ -3,7 +3,7 @@ using Silk.NET.Maths;
 
 namespace Magneplot.Generator.Curves
 {
-    public abstract class CurveSource
+    abstract class CurveSource
     {
         public abstract string Name { get; }
 

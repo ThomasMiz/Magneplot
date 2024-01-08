@@ -12,7 +12,7 @@ using TrippyGL;
 
 namespace Magneplot
 {
-    internal class Program
+    class Program
     {
         static string JsonConfigFile = "config.json";
         static string OutputFileBasePath = "models";

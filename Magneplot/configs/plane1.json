@@ -24,13 +24,18 @@
     }
   },
   "curve": {
-    "type": "spiral",
+    "type": "line",
     "config": {
-      "radius": 0.8,
-      "theta": 0,
-      "step": 99999,
-      "minY": 0,
-      "maxY": 20,
+      "from": {
+        "x": 0.8,
+        "y": 0,
+        "z": 0
+      },
+      "to": {
+        "x": 0.8,
+        "y": 20,
+        "z": 0
+      },
       "segments": 1600
     }
   },

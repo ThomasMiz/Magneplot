@@ -5,7 +5,7 @@ using Silk.NET.Maths;
 
 namespace Magneplot.Generator.Curves
 {
-    public class SpiralSource : CurveSource
+    class SpiralSource : CurveSource
     {
         [JsonRequired]
         public double Radius { get; set; }

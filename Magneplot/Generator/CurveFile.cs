@@ -5,7 +5,7 @@ using Silk.NET.Maths;
 
 namespace Magneplot.Generator
 {
-    public static class CurveFile
+    static class CurveFile
     {
         public static void SaveToStream(StreamWriter stream, List<Vector3D<double>> curve)
         {

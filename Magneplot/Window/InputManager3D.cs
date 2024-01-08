@@ -7,7 +7,7 @@ namespace Magneplot.Window
     /// <summary>
     /// Handles basic input managing for a 3D camera.
     /// </summary>
-    public sealed class InputManager3D : IDisposable
+    sealed class InputManager3D : IDisposable
     {
         /// <summary>The <see cref="IInputContext"/> this <see cref="InputManager3D"/> uses.</summary>
         public readonly IInputContext InputContext;

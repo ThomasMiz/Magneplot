@@ -10,13 +10,18 @@
     }
   },
   "curve": {
-    "type": "spiral",
+    "type": "line",
     "config": {
-      "radius": 1.2,
-      "theta": 0,
-      "step": 99999,
-      "minY": 0,
-      "maxY": 40,
+      "from": {
+        "x": 0.8,
+        "y": 0,
+        "z": 0
+      },
+      "to": {
+        "x": 0.8,
+        "y": 40,
+        "z": 0
+      },
       "segments": 3200
     }
   },

@@ -3,7 +3,7 @@ using System;
 
 namespace Magneplot.Generator
 {
-    public static class MathUtils
+    static class MathUtils
     {
         public const double TwoPi = 6.283185307179586476925286766559;
 

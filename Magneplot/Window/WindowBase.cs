@@ -10,7 +10,7 @@ namespace Magneplot.Window
     /// <summary>
     /// A base for all test projects that contains shared code.
     /// </summary>
-    public abstract class WindowBase
+    abstract class WindowBase
     {
         /// <summary>This application's <see cref="IWindow"/></summary>
         public IWindow Window { private set; get; }

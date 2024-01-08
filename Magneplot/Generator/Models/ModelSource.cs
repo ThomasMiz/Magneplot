@@ -2,7 +2,7 @@
 
 namespace Magneplot.Generator.Models
 {
-    public abstract class ModelSource
+    abstract class ModelSource
     {
         public abstract string Name { get; }
 

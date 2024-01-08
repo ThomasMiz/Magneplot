@@ -4,7 +4,7 @@ using Silk.NET.Maths;
 
 namespace Magneplot.Generator.Models
 {
-    public class PlaneSource : ModelSource
+    class PlaneSource : ModelSource
     {
         public Vector3D<double> Center { get; set; } = Vector3D<double>.Zero;
 
