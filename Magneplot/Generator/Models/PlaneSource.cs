@@ -83,8 +83,8 @@ namespace Magneplot.Generator.Models
                         + HorizontalVector * MathUtils.Lerp(-halfWidth, halfWidth, xmix2)
                         + VerticalVector * MathUtils.Lerp(-halfHeight, halfHeight, ymix);
 
-                    plane.Add(new Face(v1, v2, v4, normal, 0));
-                    plane.Add(new Face(v4, v2, v3, normal, 0));
+                    plane.Add(new Face(v2, v1, v4, normal, 0));
+                    plane.Add(new Face(v2, v4, v3, normal, 0));
                 }
             }
 

@@ -2,9 +2,10 @@
   "model": {
     "type": "cilinder",
     "config": {
+      "center": { "y": 20 },
+      "direction": { "y": 1 },
       "radius": 0.3,
-      "minY": 0,
-      "maxY": 40,
+      "length": 40,
       "rotationalSlices": 150,
       "verticalSlices": 2400
     }

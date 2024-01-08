@@ -62,7 +62,7 @@ namespace Magneplot.Generator.Curves
             for (uint i = 0; i <= Segments; i++)
             {
                 double t = i / (double)Segments;
-                Matrix4X4<double> mat = Matrix4X4.CreateFromAxisAngle(Direction, maxT * t);
+                Matrix4X4<double> mat = Matrix4X4.CreateFromAxisAngle(Direction, -maxT * t);
 
                 curve.Add(
                     Center

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 using Silk.NET.Maths;
 
@@ -7,14 +8,18 @@ namespace Magneplot.Generator.Models
 {
     class CilinderSource : ModelSource
     {
+        public Vector3D<double> Center { get; set; } = Vector3D<double>.Zero;
+
+        [JsonRequired]
+        public Vector3D<double> Direction { get; set; }
+
+        public Vector3D<double> StartTowards { get; set; } = Vector3D<double>.Zero;
+
         [JsonRequired]
         public double Radius { get; set; }
 
         [JsonRequired]
-        public double MinY { get; set; }
-
-        [JsonRequired]
-        public double MaxY { get; set; }
+        public double Length { get; set; }
 
         [JsonRequired]
         public uint RotationalSlices { get; set; }
@@ -26,47 +31,83 @@ namespace Magneplot.Generator.Models
         {
             get
             {
-                uint hashId = MathUtils.HashToUint(Radius, MinY, MaxY, RotationalSlices, VerticalSlices);
+                NormalizeVectors();
+                uint hashId = MathUtils.HashToUint(
+                    Center.X, Center.Y, Center.Z, Direction.X, Direction.Y, Direction.Z,
+                    StartTowards.X, StartTowards.Y, StartTowards.Z, Radius, Length,
+                    RotationalSlices, VerticalSlices
+                );
+
                 return "Cilinder." + hashId;
             }
         }
 
+        public void NormalizeVectors()
+        {
+            Direction = Vector3D.Normalize(Direction);
+
+            if (StartTowards == default)
+            {
+                // Takes the unit vector that is the least parallel to the direction vector, then makes it
+                // normal to it by applying Gram–Schmidt.
+                (Vector3D<double>, double)[] arr = [
+                    (Vector3D<double>.UnitX, Vector3D.Dot(Vector3D<double>.UnitX, Direction)),
+                    (Vector3D<double>.UnitY, Vector3D.Dot(Vector3D<double>.UnitY, Direction)),
+                    (Vector3D<double>.UnitZ, Vector3D.Dot(Vector3D<double>.UnitZ, Direction))
+                ];
+
+                (Vector3D<double>, double) val = arr.MinBy(x => Math.Abs(x.Item2));
+                StartTowards = val.Item1 - val.Item2 * Direction;
+            }
+            else
+            {
+                double d = Vector3D.Dot(StartTowards, Direction);
+                if (Math.Abs(d) > 0.9 * StartTowards.Length)
+                    throw new FormatException("The startTowards vector must not be parallel to the direction vector");
+                StartTowards -= d * Direction;
+            }
+
+            StartTowards = Vector3D.Normalize(StartTowards);
+        }
+
         public override List<Face> GetModel()
         {
+            NormalizeVectors();
+            double halfLength = Length / 2;
+
             List<Face> cilinder = new();
 
             for (uint ri = 0; ri < RotationalSlices; ri++)
             {
-                double r1 = MathUtils.TwoPi * ri / RotationalSlices;
-                double r2 = MathUtils.TwoPi * (ri + 1) / RotationalSlices;
+                double r1 = ri / (double)RotationalSlices;
+                double r2 = (ri + 1) / (double)RotationalSlices;
 
-                (double sin1, double cos1) = Math.SinCos(r1);
-                (double sin2, double cos2) = Math.SinCos(r2);
-                double x1 = cos1 * Radius;
-                double x2 = cos2 * Radius;
-                double z1 = sin1 * Radius;
-                double z2 = sin2 * Radius;
+                Matrix4X4<double> mat1 = Matrix4X4.CreateFromAxisAngle(Direction, r1 * MathUtils.TwoPi);
+                Matrix4X4<double> mat2 = Matrix4X4.CreateFromAxisAngle(Direction, r2 * MathUtils.TwoPi);
 
                 for (uint yi = 0; yi < VerticalSlices; yi++)
                 {
-                    double y1 = MathUtils.Lerp(MinY, MaxY, yi / (double)VerticalSlices);
-                    double y2 = MathUtils.Lerp(MinY, MaxY, (yi + 1) / (double)VerticalSlices);
+                    double y1 = yi / (double)VerticalSlices;
+                    double y2 = (yi + 1) / (double)VerticalSlices;
 
-                    cilinder.Add(new Face(
-                        new Vector3D<double>(x1, y1, z1),
-                        new Vector3D<double>(x1, y2, z1),
-                        new Vector3D<double>(x2, y1, z2),
-                        new Vector3D<double>((x1 + x1 + x2) / 3, 0, (z1 + z1 + z2) / 3),
-                        0
-                    ));
+                    Vector3D<double> v1 = Center
+                        + Direction * MathUtils.Lerp(-halfLength, halfLength, y1)
+                        + Radius * Vector3D.Transform(StartTowards, mat1);
 
-                    cilinder.Add(new Face(
-                        new Vector3D<double>(x2, y1, z2),
-                        new Vector3D<double>(x1, y2, z1),
-                        new Vector3D<double>(x2, y2, z2),
-                        new Vector3D<double>((x2 + x1 + x2) / 3, 0, (z2 + z1 + z2) / 3),
-                        0
-                    ));
+                    Vector3D<double> v2 = Center
+                        + Direction * MathUtils.Lerp(-halfLength, halfLength, y2)
+                        + Radius * Vector3D.Transform(StartTowards, mat1);
+
+                    Vector3D<double> v3 = Center
+                        + Direction * MathUtils.Lerp(-halfLength, halfLength, y2)
+                        + Radius * Vector3D.Transform(StartTowards, mat2);
+
+                    Vector3D<double> v4 = Center
+                        + Direction * MathUtils.Lerp(-halfLength, halfLength, y1)
+                        + Radius * Vector3D.Transform(StartTowards, mat2);
+
+                    cilinder.Add(new Face(v2, v1, v4, Vector3D.Cross(v2 - v1, v2 - v4), 0));
+                    cilinder.Add(new Face(v2, v4, v3, Vector3D.Cross(v2 - v4, v2 - v3), 0));
                 }
             }
 
