@@ -118,4 +118,4 @@ Acá tenemos un carpincho en una bobina, porque la ciencia es para preguntarse s
 ![](gallery/carpincho2.png)
 
 ## Dudas?
-Cualquier duda sobre siéntanse libres de escribirme al email del ITBA de Thomas Mizrahi!
+Cualquier duda siéntanse libres de escribirme al email del ITBA de Thomas Mizrahi!
