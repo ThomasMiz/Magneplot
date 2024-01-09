@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
 using Silk.NET.Maths;
 
@@ -48,16 +47,7 @@ namespace Magneplot.Generator.Models
 
             if (StartTowards == default)
             {
-                // Takes the unit vector that is the least parallel to the direction vector, then makes it
-                // normal to it by applying Gram–Schmidt.
-                (Vector3D<double>, double)[] arr = [
-                    (Vector3D<double>.UnitX, Vector3D.Dot(Vector3D<double>.UnitX, Direction)),
-                    (Vector3D<double>.UnitY, Vector3D.Dot(Vector3D<double>.UnitY, Direction)),
-                    (Vector3D<double>.UnitZ, Vector3D.Dot(Vector3D<double>.UnitZ, Direction))
-                ];
-
-                (Vector3D<double>, double) val = arr.MinBy(x => Math.Abs(x.Item2));
-                StartTowards = val.Item1 - val.Item2 * Direction;
+                StartTowards = MathUtils.FindNormalVectorTo(Direction);
             }
             else
             {

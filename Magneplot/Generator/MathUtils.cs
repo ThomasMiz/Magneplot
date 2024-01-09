@@ -1,5 +1,6 @@
 ﻿using Silk.NET.Maths;
 using System;
+using System.Linq;
 
 namespace Magneplot.Generator
 {
@@ -58,6 +59,20 @@ namespace Magneplot.Generator
                 }
                 return num + num2 * 0x5d588b65;
             }
+        }
+
+        public static Vector3D<double> FindNormalVectorTo(Vector3D<double> direction)
+        {
+            // Takes the unit vector that is the least parallel to the direction vector, then makes it
+            // normal to it by applying Gram–Schmidt.
+            (Vector3D<double>, double)[] arr = [
+                (Vector3D<double>.UnitX, Vector3D.Dot(Vector3D<double>.UnitX, direction)),
+                (Vector3D<double>.UnitY, Vector3D.Dot(Vector3D<double>.UnitY, direction)),
+                (Vector3D<double>.UnitZ, Vector3D.Dot(Vector3D<double>.UnitZ, direction))
+            ];
+
+            (Vector3D<double>, double) val = arr.MinBy(x => Math.Abs(x.Item2));
+            return val.Item1 - val.Item2 * direction;
         }
 
         public static Vector3D<double> AddAll(Span<Vector3D<double>> flowvecs)

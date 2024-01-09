@@ -32,7 +32,7 @@ $ dotnet run
 ## Instrucciones de uso
 El programa no tiene una interfaz gráfica para especificar el modelo 3D y curva a visualizar, sino que se especifica mediante un archivo json, por defecto `configs/config.json`. En este archivo se especifica el modelo 3D a usar y la curva.
 
-La curva puede ser un espiral/solenoide, o puede ser una línea recta entre dos puntos. El modelo puede ser un plano o un cilindro, o también se puede cargar un modelo 3D de tipo `.obj`.
+La curva puede ser un espiral/solenoide, una circunferencia, o una línea recta entre dos puntos. El modelo puede ser un plano o un cilindro, o también se puede cargar un modelo 3D de tipo `.obj`.
 
 Notar que la configuración incluye cómo discretizar la superficie y la curva. Mientras más parches tenga la superficie o segmentos tenga la curva, más tiempo se tardará en generar el resultado. De todos modos el programa almacena los resultados calculados en una carpeta `models`, y si detecta que una configuración ya fue calculada anteriormente entonces simplemente la carga del archivo. La carpeta `models` se puede borrar sin ningún problema.
 

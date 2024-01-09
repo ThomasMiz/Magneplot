@@ -20,7 +20,7 @@ namespace Magneplot.Generator
             IgnoreReadOnlyProperties = true,
             ReadCommentHandling = JsonCommentHandling.Skip,
             WriteIndented = true,
-            UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip,
+            UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
             PropertyNameCaseInsensitive = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             NumberHandling = JsonNumberHandling.AllowReadingFromString,
@@ -85,7 +85,17 @@ namespace Magneplot.Generator
             string typeName;
             JsonElement ele;
 
-            if (CurveSource is SpiralSource spiralSource)
+            if (CurveSource is LineSource lineSource)
+            {
+                typeName = "line";
+                ele = JsonSerializer.SerializeToElement(lineSource, options);
+            }
+            else if (CurveSource is CircumferenceSource circumferenceSource)
+            {
+                typeName = "circumference";
+                ele = JsonSerializer.SerializeToElement(circumferenceSource, options);
+            }
+            else if (CurveSource is SpiralSource spiralSource)
             {
                 typeName = "spiral";
                 ele = JsonSerializer.SerializeToElement(spiralSource, options);
@@ -141,7 +151,7 @@ namespace Magneplot.Generator
             }
             else
             {
-                throw new NotImplementedException("Json model deserialize type not implemented: " + type);
+                throw new NotImplementedException("Unknown JSON model type to deserialize: " + type);
             }
         }
 
@@ -154,13 +164,17 @@ namespace Magneplot.Generator
             {
                 return JsonSerializer.Deserialize<LineSource>(conf, options);
             }
-            else if (type.Equals("spiral", StringComparison.OrdinalIgnoreCase))
+            else if (type.Equals("circumference", StringComparison.OrdinalIgnoreCase))
+            {
+                return JsonSerializer.Deserialize<CircumferenceSource>(conf, options);
+            }
+            else if(type.Equals("spiral", StringComparison.OrdinalIgnoreCase))
             {
                 return JsonSerializer.Deserialize<SpiralSource>(conf, options);
             }
             else
             {
-                throw new NotImplementedException("Json curve deserialize type not implemented: " + type);
+                throw new NotImplementedException("Unknown JSON curve type to deserialize: " + type);
             }
         }
     }
