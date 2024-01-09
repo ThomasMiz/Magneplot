@@ -49,7 +49,7 @@ namespace Magneplot
                 Console.WriteLine("Got curve with {0} segments", curve.Count - 1);
 
                 FlowComputor.ComputeFlowValues(model, curve, config.I);
-                netFlow = MathUtils.AddAll(model.Select(v => v.Flow).ToArray());
+                netFlow = model.Select(v => v.Flow).Sum();
 
                 Console.WriteLine("Saving to file: {0}", filename);
                 Directory.CreateDirectory(OutputFileBasePath);

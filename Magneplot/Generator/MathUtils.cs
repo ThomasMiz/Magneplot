@@ -74,55 +74,5 @@ namespace Magneplot.Generator
             (Vector3D<double>, double) val = arr.MinBy(x => Math.Abs(x.Item2));
             return val.Item1 - val.Item2 * direction;
         }
-
-        public static Vector3D<double> AddAll(Span<Vector3D<double>> flowvecs)
-        {
-            if (flowvecs.IsEmpty)
-                throw new ArgumentException("Flaco");
-
-            while (flowvecs.Length != 1)
-            {
-                int nextlen = flowvecs.Length / 2;
-                for (int i = 0; i < nextlen; i++)
-                    flowvecs[i] = flowvecs[2 * i] + flowvecs[2 * i + 1];
-
-                if ((flowvecs.Length & 1) == 0)
-                {
-                    flowvecs = flowvecs.Slice(0, nextlen);
-                }
-                else
-                {
-                    flowvecs[nextlen] = flowvecs[^1];
-                    flowvecs = flowvecs.Slice(0, nextlen + 1);
-                }
-            }
-
-            return flowvecs[0];
-        }
-
-        public static double AddAll(Span<double> flowvecs)
-        {
-            if (flowvecs.IsEmpty)
-                throw new ArgumentException("Flaco");
-
-            while (flowvecs.Length != 1)
-            {
-                int nextlen = flowvecs.Length / 2;
-                for (int i = 0; i < nextlen; i++)
-                    flowvecs[i] = flowvecs[2 * i] + flowvecs[2 * i + 1];
-
-                if ((flowvecs.Length & 1) == 0)
-                {
-                    flowvecs = flowvecs.Slice(0, nextlen);
-                }
-                else
-                {
-                    flowvecs[nextlen] = flowvecs[^1];
-                    flowvecs = flowvecs.Slice(0, nextlen + 1);
-                }
-            }
-
-            return flowvecs[0];
-        }
     }
 }

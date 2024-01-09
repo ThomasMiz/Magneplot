@@ -18,8 +18,7 @@ namespace Magneplot.Generator
                 Face face = model[faceIndex];
 
                 Vector3D<double> center = (face.Vertex1 + face.Vertex2 + face.Vertex3) / 3;
-
-                Vector3D<double>[] magfieldVecs = new Vector3D<double>[curve.Count - 1];
+                Vector3D<double> netMagfield = Vector3D<double>.Zero;
 
                 for (int i = 0; i < curve.Count - 1; i++)
                 {
@@ -27,10 +26,9 @@ namespace Magneplot.Generator
                     Vector3D<double> rp_next = curve[i + 1];
 
                     Vector3D<double> ds = rp_next - rp;
-                    magfieldVecs[i] = MoOver4Pi * I * Vector3D.Cross(ds, center - rp) / Math.Pow((center - rp).LengthSquared, 1.5);
+                    netMagfield += MoOver4Pi * I * Vector3D.Cross(ds, center - rp) / Math.Pow((center - rp).LengthSquared, 1.5);
                 }
 
-                Vector3D<double> netMagfield = MathUtils.AddAll(magfieldVecs);
                 Vector3D<double> areaVec = Vector3D.Normalize(face.Normal);
                 face.FlowIntensity = Vector3D.Dot(netMagfield, areaVec);
 
