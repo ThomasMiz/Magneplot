@@ -72,6 +72,32 @@ En este archivo, especificamos de modelo un plano, cuyo centro es en (1, 4, 0), 
 
 Luego especificamos de curva un espiral, cuyo centro es en (-1, 4, 0), que avanza  girando hacia la dirección (0, -1, 1), con un radio de 1.8, longitud de 0.4, dando una vuelta cada 0.4 y comenzando en la dirección (1, 0, 0). Para discretizar, el espiral se divide en 1600 segmentos.
 
+La primera vez que corramos el programa, va a detectar que le dimos una configuración nueva que no ha visto antes y hará los cálculos de flujo. Para configuraciones complejas esto puede tardar mucho, pero para este caso no va a tardar mucho. Se abre una terminal de comandos y nos imprime algo que se ve así:
+
+```txt
+Couldn't file file models\Plane.4138112141-Spiral.2219332950.mobj, generating...
+Building mobj file for config Plane.3869676677-Spiral.2236241238
+Got model with 8000 faces
+Got curve with 1600 segments
+Processed 1000 faces out of 8000 (12.5%)
+Processed 2000 faces out of 8000 (25%)
+Processed 3000 faces out of 8000 (37.5%)
+Processed 4000 faces out of 8000 (50%)
+Processed 5000 faces out of 8000 (62.5%)
+Processed 6000 faces out of 8000 (75%)
+Processed 7000 faces out of 8000 (87.5%)
+Processed 8000 faces out of 8000 (100%)
+Saving to file: models\Plane.4138112141-Spiral.2219332950.mobj
+```
+
+Podemos ver que el resultado del cálculo se guarda en un archivo `.mobj`. La próxima vez que corramos el programa con esta misma configuración, en vez de calcular todo otra vez, simplemente carga el archivo. A continuación, el programa abre una ventana donde nos muestra el resultado en un espacio 3D interactivo. Los controles son:
+
+* Te podés mover hacia adelante/izquierda/atrás/derecha usando las teclas W/A/S/D
+* Hacia abajo/arriba usando las teclas Q/E
+* Manteniendo SHIFT se multiplica tu velocidad x5
+* Podés mover la cámara apretado el botón izquierdo del mouse y moviendo el mouse
+* Alternativamente se puede conectar un gamepad (por ejemplo, uno de Xbox)
+
 El resultado de este archivo es el siguiente:
 
 ![](images/example.png)
