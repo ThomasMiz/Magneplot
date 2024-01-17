@@ -1,0 +1,7 @@
+# The .gitignore at the root of this repo follows the Visual Studio template,
+# which (correctly) ignores all `*.obj` files, which are temporary compilation
+# files. Unfortunately, `.obj` is also used for the OBJ file format for 3D
+# models, which means our 3D models would be ignored too.
+
+# This un-ignores all files in this folder
+!*
