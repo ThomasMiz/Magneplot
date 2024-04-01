@@ -117,7 +117,7 @@ Con los contenidos de Física III en mente, podemos intentar entender por qué o
 
 La idea es simple; estos cables no manejan voltajes ni corrientes muy grandes, pero si cambian muy rápido (Ethernet Cat5 son 100Mbps, 0 100MHz, y Gigabit Ethernet es 10 veces más que eso!), por ende cualquier tipo de inductancia mutua entre dos líneas podría causar que una transmisión por una genere un efecto sobre la otra.
 
-Durante la materia siempre modelamos los cables como hilos infinitamente pequeños, pero esto obviamente no nos sirve acá ya que en ese caso los hilos no tendrían área, por ende no puede haber flujo del campo de inducción magnética! Una primera solución es reemplazar un hilo por un plano, la idea es que el efecto que tiene el campo de inducción sobre la superficie del plano sería constante sin no los trenzamos, pero si los trenzamos se cancelaría a lo largo del plano.
+Durante la materia siempre modelamos los cables como hilos infinitamente pequeños, pero esto obviamente no nos sirve acá ya que en ese caso los hilos no tendrían área, por ende no puede haber flujo del campo de inducción magnética! Una primera solución es reemplazar un hilo por un plano, la idea es que el efecto que tiene el campo de inducción sobre la superficie del plano sería constante si no los trenzamos, pero si los trenzamos se cancelaría a lo largo del plano.
 
 Acá lo intento ilustrar con dibujitos:
 
